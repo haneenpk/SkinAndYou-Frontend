@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner'
 import axios from "axios";
 import "@fontsource/great-vibes";
@@ -42,6 +42,8 @@ function Home() {
 
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
+  const [showButton, setShowButton] = useState(false);
+
   const [appoinmentData, setAppoinmentData] = useState({
     username: '',
     email: '',
@@ -76,7 +78,7 @@ function Home() {
       await appoinmentSchema.validate(appoinmentData, { abortEarly: false });
       setErrors({});
 
-      const response = await axios.post(`http://localhost:3000/api/user/appoinment`, appoinmentData);
+      const response = await axios.post(`https://cozastore.online/api/user/appoinment`, appoinmentData);
 
       if (response.data.message === 'Success') {
         setAppoinmentData({
@@ -95,11 +97,41 @@ function Home() {
     }
   }
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const aboutUsSection = document.getElementById('about-us-section');
+      const bannerSection = document.getElementById('banner-section');
+
+      if (aboutUsSection) {
+        const aboutUsTop = aboutUsSection.getBoundingClientRect().top;
+        const bannerBottom = bannerSection.getBoundingClientRect().bottom;
+
+        // Show button when About Us section is in view
+        if (aboutUsTop <= window.innerHeight && bannerBottom < 0) {
+          setShowButton(true);
+        } else {
+          setShowButton(false);
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  const handleBookNow = () => {
+    // Handle book now logic
+    alert('Book Now Clicked');
+  };
+
   return (
     <div className='-mt-36'>
 
       {/* Banner */}
-      <div className='relative w-full h-screen'>
+      <div id="banner-section" className='relative w-full h-screen'>
         <video
           className="absolute top-0 left-0 w-full h-full object-cover"
           src="http://www.skinandyou.in/static/media/Website%20Video.609f78c6161b60ddc4be.mp4"
@@ -125,8 +157,18 @@ function Home() {
         </div>
       </div>
 
+      {/* Sticky Book Appointment Button */}
+      <div
+        className={`fixed bottom-5 left-5 transform transition-opacity duration-500 ease-in-out ${showButton ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5 pointer-events-none'
+          }`}
+      >
+        <button onClick={handleOpen} className='shadow-lg py-3 px-8 bg-[#fe9b8e] text-black text-lg rounded-xl transition duration-300 ease-in-out'>
+          Book Appointment
+        </button>
+      </div>
+
       {/* About Us */}
-      <div className='w-full py-10 px-10 lg:px-40 flex flex-col lg:flex-row items-center lg:items-start gap-32'>
+      <div id="about-us-section" className='w-full py-10 px-10 lg:px-40 flex flex-col lg:flex-row items-center lg:items-start gap-32'>
         <div className='flex-shrink-0'>
           <img src="http://www.skinandyou.in/static/media/Dr%20geeta%20Transparent.f534e189275822cc2cd1.png"
             alt="Dr. Geeta Mehra Fazalbhoy"

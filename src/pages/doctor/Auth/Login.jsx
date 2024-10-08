@@ -33,7 +33,7 @@ const Login = () => {
       await doctorLoginSchema.validate(formData, { abortEarly: false });
       setErrors({});
 
-      const response = await axios.post(`http://localhost:3000/api/doctor/login`, formData);
+      const response = await axios.post(`https://cozastore.online/api/doctor/login`, formData);
 
       console.log("response:", response);
 
