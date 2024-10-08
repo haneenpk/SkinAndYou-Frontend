@@ -1,7 +1,24 @@
 import React, { useState } from 'react';
+import { toast } from 'sonner'
+import axios from "axios";
 import "@fontsource/great-vibes";
+import { appoinmentSchema } from "../../validations/appoinmentSchema";
+import handleInputChange from "../../utils/formUtils/handleInputChange";
+import handleFormErrors from "../../utils/formUtils/handleFormErrors";
+import FormErrorDisplay from "../../components/FormErrorDisplay";
 import { IoIosArrowDroprightCircle } from "react-icons/io";
 import { IoIosArrowDropleftCircle } from "react-icons/io";
+import {
+  Input,
+  Button,
+  Dialog,
+  IconButton,
+  Typography,
+  DialogBody,
+  DialogHeader,
+  DialogFooter,
+} from "@material-tailwind/react";
+import { HiMiniXMark } from "react-icons/hi2";
 
 function Home() {
 
@@ -12,7 +29,7 @@ function Home() {
       age: 38,
     },
     {
-      text: "I was struggling with hair thinning, but after starting treatment with Dr. Geeta, my hair looks fuller and healthier. The care and support I received were amazing. I'm so happy with the results!",
+      text: "I was struggling with hair thinning, but after starting treatment with Dr. Geeta, my hair looks fuller and healthier. I'm so happy with the results!",
       name: "Ravi M",
       age: 42,
     },
@@ -25,6 +42,21 @@ function Home() {
 
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
+  const [appoinmentData, setAppoinmentData] = useState({
+    username: '',
+    email: '',
+    phone: '',
+    bookingDate: null,
+    message: '',
+  });
+
+  const [open, setOpen] = useState(false);
+
+  const [errors, setErrors] = useState({});
+  const [serverResponse, setServerResponse] = useState("");
+
+  const handleOpen = () => setOpen(!open);
+
   const handleNext = () => {
     setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
   };
@@ -34,6 +66,34 @@ function Home() {
       (prev) => (prev - 1 + testimonials.length) % testimonials.length
     );
   };
+
+  const handleChange = (e) => {
+    handleInputChange(e, appoinmentData, setAppoinmentData, setServerResponse, setErrors);
+  };
+
+  const handleAppoinment = async () => {
+    try {
+      await appoinmentSchema.validate(appoinmentData, { abortEarly: false });
+      setErrors({});
+
+      const response = await axios.post(`http://localhost:3000/api/user/appoinment`, appoinmentData);
+
+      if (response.data.message === 'Success') {
+        setAppoinmentData({
+          username: '',
+          email: '',
+          phone: '',
+          bookingDate: null,
+          message: '',
+        })
+        handleOpen()
+        toast.success('Appoinment Booked Successfully')
+      }
+
+    } catch (error) {
+      handleFormErrors(error, setErrors, setServerResponse);
+    }
+  }
 
   return (
     <div className='-mt-36'>
@@ -57,7 +117,7 @@ function Home() {
               <button className='shadow-lg py-5 px-12 bg-white text-xl text-[#0c1451] font-semibold rounded-xl transition duration-300 ease-in-out hover:bg-[#fe9b8e] hover:text-white'>
                 Call Now
               </button>
-              <button className='shadow-lg py-5 px-12 bg-white text-xl text-[#0c1451] font-semibold rounded-xl ml-10 transition duration-300 ease-in-out hover:bg-[#fe9b8e] hover:text-white'>
+              <button onClick={handleOpen} className='shadow-lg py-5 px-12 bg-white text-xl text-[#0c1451] font-semibold rounded-xl ml-10 transition duration-300 ease-in-out hover:bg-[#fe9b8e] hover:text-white'>
                 Book Now
               </button>
             </div>
@@ -332,6 +392,155 @@ function Home() {
           </button>
         </div>
       </div>
+
+      <Dialog size="sm" open={open} handler={handleOpen} className="px-4 py-2">
+        <DialogHeader className="relative m-0 block">
+          <Typography variant="h4" color="blue-gray">
+            Book Appointment
+          </Typography>
+          <IconButton
+            size="sm"
+            variant="text"
+            className="!absolute right-3.5 top-3.5"
+            onClick={handleOpen}
+          >
+            <HiMiniXMark className="h-6 w-6 stroke-1" />
+          </IconButton>
+        </DialogHeader>
+        <DialogBody className="space-y-2 pb-1">
+          <div>
+            <Typography
+              variant="small"
+              color="blue-gray"
+              className="mb-2 text-left font-medium"
+            >
+              Name
+            </Typography>
+            <Input
+              onChange={handleChange}
+              color="gray"
+              size="lg"
+              value={appoinmentData.username}
+              placeholder="Your Name"
+              name="username"
+              className="placeholder:opacity-100 focus:!border-t-gray-900"
+              containerProps={{
+                className: "!min-w-full",
+              }}
+              labelProps={{
+                className: "hidden",
+              }}
+            />
+            {errors.username && <FormErrorDisplay error={errors.username} />}
+          </div>
+          <div>
+            <Typography
+              variant="small"
+              color="blue-gray"
+              className="mb-2 text-left font-medium"
+            >
+              Email
+            </Typography>
+            <Input
+              onChange={handleChange}
+              color="gray"
+              size="lg"
+              value={appoinmentData.email}
+              placeholder="Your Email"
+              name="email"
+              className="placeholder:opacity-100 focus:!border-t-gray-900"
+              containerProps={{
+                className: "!min-w-full",
+              }}
+              labelProps={{
+                className: "hidden",
+              }}
+            />
+            {errors.email && <FormErrorDisplay error={errors.email} />}
+          </div>
+          <div className="flex gap-4">
+            <div className="w-full">
+              <Typography
+                variant="small"
+                color="blue-gray"
+                className="mb-2 text-left font-medium"
+              >
+                Phone
+              </Typography>
+              <Input
+                onChange={handleChange}
+                color="gray"
+                size="lg"
+                placeholder="Your Phone"
+                value={appoinmentData.phone}
+                name="phone"
+                className="placeholder:opacity-100 focus:!border-t-gray-900"
+                containerProps={{
+                  className: "!min-w-full",
+                }}
+                labelProps={{
+                  className: "hidden",
+                }}
+              />
+              {errors.phone && <FormErrorDisplay error={errors.phone} />}
+            </div>
+            <div className="w-full">
+              <Typography
+                variant="small"
+                color="blue-gray"
+                className="mb-2 text-left font-medium"
+              >
+                Date
+              </Typography>
+              <Input
+                onChange={handleChange}
+                type='date'
+                color="gray"
+                size="lg"
+                value={appoinmentData.bookingDate}
+                name="bookingDate"
+                containerProps={{
+                  className: "!min-w-full",
+                }}
+                labelProps={{
+                  className: "hidden",
+                }}
+              />
+              {errors.bookingDate && <FormErrorDisplay error={errors.bookingDate} />}
+            </div>
+          </div>
+          <div>
+            <Typography
+              variant="small"
+              color="blue-gray"
+              className="mb-2 text-left font-medium"
+            >
+              Message
+            </Typography>
+            <Input
+              onChange={handleChange}
+              color="gray"
+              size="lg"
+              placeholder="Your Message"
+              value={appoinmentData.message}
+              name="message"
+              className="placeholder:opacity-100 focus:!border-t-gray-900"
+              containerProps={{
+                className: "!min-w-full",
+              }}
+              labelProps={{
+                className: "hidden",
+              }}
+            />
+            {errors.message && <FormErrorDisplay error={errors.message} />}
+          </div>
+        </DialogBody>
+        <DialogFooter>
+          <Button className="ml-auto bg-[#fe9b8e]" onClick={handleAppoinment}>
+            MAKE AN APPOINMENT
+          </Button>
+        </DialogFooter>
+      </Dialog>
 
     </div>
   )

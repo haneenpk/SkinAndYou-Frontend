@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const doctorSlice = createSlice({
     name: "doctor",
     initialState: {
-        isLoggedIn: localStorage.getItem("doctorAccessToken") ? true : false,
+        isLoggedIn: localStorage.getItem("doctorJwtToken") ? true : false,
         doctorData: null,
         searchResults: {
             searchOn: null,

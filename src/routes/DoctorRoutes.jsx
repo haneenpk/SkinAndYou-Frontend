@@ -18,7 +18,7 @@ import ErrorPage from "../pages/ErrorPage";
 const DoctorRoutes = ({ isLoggedIn }) => {
 
     const navigateToLogin = () => <Navigate to="/doctor/login" />;
-    const navigateDoctorHome = () => <Navigate to="/admin" />;
+    const navigateDoctorHome = () => <Navigate to="/doctor" />;
 
     const routes = [
         { path: "/", element: isLoggedIn ? <DoctorHome /> : navigateToLogin() },

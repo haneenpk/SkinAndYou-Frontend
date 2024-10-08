@@ -25,7 +25,7 @@ function Layout() {
     );
 
     useEffect(async () => {
-        if (localStorage.getItem(`${userRole}AccessToken`)) {
+        if (localStorage.getItem(`${userRole}JwtToken`)) {
             if (userRole === "doctor") {
                 dispatch(setLoggedIn(true));
                 console.log("changedA:", isDoctorLoggedIn);
