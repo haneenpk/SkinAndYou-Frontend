@@ -18,12 +18,32 @@ function Header() {
     navigate("/doctor/login");
   };
 
+  // Handlers for navigation
+  const handleHomeClick = () => {
+    navigate("/doctor"); // Navigate to the doctor home page
+  };
+
+  const handleAppointmentClick = () => {
+    navigate("/doctor/appoinment"); // Navigate to the appointment page
+  };
+
   return (
-    <header className="w-4/5 mx-auto bg-white text-white py-3 items-center z-20 mt-14 flex rounded-2xl">
+    <header className="w-4/5 mx-auto bg-white text-white py-3 items-center z-20 mt-14 flex rounded-2xl shadow-xl">
       <img src="http://www.skinandyou.in/static/media/Logo.3245a860dcd18a15f34d.png" alt="" className='h-14 ml-2' />
       <div className='w-full'>
         <ul className='text-gray-600 flex gap-x-6 justify-end mr-3 text-base font-semibold' style={{ fontFamily: 'Marcellus, serif' }}>
-          <li className='cursor-pointer hover:text-[#fe9b8e] transition-colors duration-300 mt-1'>HOME</li>
+          <li 
+            className='cursor-pointer hover:text-[#fe9b8e] transition-colors duration-300 mt-1'
+            onClick={handleHomeClick} // Add click event for HOME
+          >
+            HOME
+          </li>
+          <li 
+            className='cursor-pointer hover:text-[#fe9b8e] transition-colors duration-300 mt-1'
+            onClick={handleAppointmentClick} // Add click event for APPOINTMENT
+          >
+            APPOINTMENT
+          </li>
           <div>
             <IoMdLogOut
               onClick={handleLogout}

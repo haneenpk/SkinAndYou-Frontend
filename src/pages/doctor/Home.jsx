@@ -44,6 +44,12 @@ function Home() {
         </div>
       </div>
 
+      <div className='flex items-center justify-center pt-10'>
+        <div className='flex items-center justify-center py-10 bg-[#fe9b8e] w-1/5 rounded-xl'>
+          <span className='text-2xl font-semibold text-white'>No of Booked : {bookingData.length}</span>
+        </div>
+      </div>
+
       {/* User booked details */}
       <div className='container mx-auto px-16 py-8'>
         <h2 className='text-2xl font-semibold text-[#0c1451] mb-4'>User Booked Details</h2>
