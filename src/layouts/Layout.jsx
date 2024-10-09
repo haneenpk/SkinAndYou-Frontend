@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-// import Axios from "../api/shared/instance";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import MainRouter from "../routes/MainRouter";
@@ -13,9 +12,8 @@ import { userRoutesToCheck, doctorRoutesToCheck } from "../config/routesConfig";
 function Layout() {
 
     const dispatch = useDispatch();
-    const isDoctorLoggedIn = useSelector(state => state.doctor.isLoggedIn);
-
     const location = useLocation();
+    const isDoctorLoggedIn = useSelector(state => state.doctor.isLoggedIn);
 
     let userRole = location.pathname.startsWith("/doctor") ? "doctor" : "user";
 
@@ -24,15 +22,18 @@ function Layout() {
         location
     );
 
-    useEffect(async () => {
-        if (localStorage.getItem(`${userRole}JwtToken`)) {
+    // Ensure login state is rehydrated on page load
+    useEffect(() => {
+        const jwtToken = localStorage.getItem(`${userRole}JwtToken`);
+        const doctorData = localStorage.getItem("doctorData");
+
+        if (jwtToken) {
             if (userRole === "doctor") {
                 dispatch(setLoggedIn(true));
-                console.log("changedA:", isDoctorLoggedIn);
-                dispatch(setDoctorData(localStorage.getItem("doctorData")));
+                dispatch(setDoctorData(doctorData));
             }
         }
-    }, [isDoctorLoggedIn])
+    }, [dispatch, userRole]);  // useEffect should run once based on userRole
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -47,4 +48,4 @@ function Layout() {
     )
 }
 
-export default Layout
+export default Layout;
