@@ -10,7 +10,7 @@ function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://cozastore.online/api/user/get-appoinment');
+        const response = await axios.get('https://cozastore.online/skin/api/user/get-appoinment');
         console.log(response.data.data);
         setBookingData(response.data.data); // Set the booking data
       } catch (err) {
