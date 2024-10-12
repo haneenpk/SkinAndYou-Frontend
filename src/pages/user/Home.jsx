@@ -78,7 +78,7 @@ function Home() {
       await appoinmentSchema.validate(appoinmentData, { abortEarly: false });
       setErrors({});
 
-      const response = await axios.post(`https://cozastore.online/api/user/appoinment`, appoinmentData);
+      const response = await axios.post(`https://cozastore.online/skin/api/user/appoinment`, appoinmentData);
 
       if (response.data.message === 'Success') {
         setAppoinmentData({
